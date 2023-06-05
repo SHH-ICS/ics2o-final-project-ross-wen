@@ -2,3 +2,8 @@ Jun 1:
 Booted up the repo for the final project. Finally finished the design phase and moved up to the coding phase. So far only started working on the game class. 
 Pygame window works, there is just nothing in it.
 Only problem was that there was some issue importing the github repo into replit. 
+
+June 5:
+Initialized all the images in the asset folder to variables and a list
+started working on the tile class, but its not completed as of now. 
+plan on working on board class tmr. 
