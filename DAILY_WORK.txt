@@ -9,3 +9,5 @@ started working on the tile class, but its not completed as of now.
 plan on working on board class tmr. 
 
 June 6:
+drew the board, started on placing mines function. 
+only problem today was the nested for loop for board_list which took way longer than it should have. tmr will continue on placing mines and maybe also calculating the clues for each surrounding tile. 
