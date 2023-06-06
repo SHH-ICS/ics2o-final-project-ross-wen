@@ -7,3 +7,5 @@ June 5:
 Initialized all the images in the asset folder to variables and a list
 started working on the tile class, but its not completed as of now. 
 plan on working on board class tmr. 
+
+June 6:

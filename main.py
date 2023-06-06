@@ -39,7 +39,8 @@ class Game:
     self.clock = pygame.time.Clock()
     
   def new(self):
-    pass #just for now
+    self.board = Board()
+    self.board.display_board()
     
   def run(self): #game loop 
     self.playing = True
@@ -56,6 +57,7 @@ class Game:
           
   def draw(self):
     self.screen.fill(BACKGROUND_COLOR)
+    self.board.draw(self.screen)
     pygame.display.flip()
 
 #tile class for tiles
@@ -67,11 +69,14 @@ class Game:
 
 class Tile:
   def __init__(self, x, y, image, type, revealed = False, flagged = False):
-    self.x, self.y = x * TILE_SIZE, y*TILE_SIZE
+    self.x, self.y = x * TILE_SIZE, y * TILE_SIZE
     self.image = image
     self.type = type
     self.revealed = revealed
     self.flagged = flagged
+
+  def draw(self, board_surface):
+    board_surface.blit(self.image, (self.x, self.y))
     
   def __repr__(self):
     return self.type
@@ -79,10 +84,31 @@ class Tile:
     
     
 #board class for the board
-#class Board:
-  #def __init__(self):
-    
+class Board:
+  def __init__(self):
+    self.board_surface = pygame.Surface((WIDTH,HEIGHT))
+    self.board_list = [[Tile(col, row, tile_empty, ".") for row in range(ROWS)] for col in range(COLS)]
 
+  def draw(self, screen):
+    for row in self.board_list:
+      for tile in row:
+        tile.draw(self.board_surface)
+    screen.blit(self.board_surface,(0,0))
+      
+  def place_mines(self):
+    for i in range(NUM_MINES):
+      while True:
+        x = random.randint(0, COLS-1)
+        y = random.randint(0, ROWS-1)
+
+        if self.board_list[x][y].type == ".":
+          self.board_list[x][y].image = tile_mine
+          self.board_list[x][y].type = "bomb"
+          break
+        
+  def display_board(self):
+    for row in self.board_list:
+      print(row)
 
 
 
