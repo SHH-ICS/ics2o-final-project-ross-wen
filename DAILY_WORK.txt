@@ -11,3 +11,6 @@ plan on working on board class tmr.
 June 6:
 drew the board, started on placing mines function. 
 only problem today was the nested for loop for board_list which took way longer than it should have. tmr will continue on placing mines and maybe also calculating the clues for each surrounding tile. 
+
+June 7:
+added events such as clicking and right clicking, added clues and checking neighbors. drew the tiles onto the board. The game is playable and basically almost done the game now. the only thing left is to just pause the game when you lose and add a game check function to check if you win the game. 
