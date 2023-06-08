@@ -1,3 +1,4 @@
+
 Jun 1:
 Booted up the repo for the final project. Finally finished the design phase and moved up to the coding phase. So far only started working on the game class. 
 Pygame window works, there is just nothing in it.
@@ -14,3 +15,6 @@ only problem today was the nested for loop for board_list which took way longer 
 
 June 7:
 added events such as clicking and right clicking, added clues and checking neighbors. drew the tiles onto the board. The game is playable and basically almost done the game now. the only thing left is to just pause the game when you lose and add a game check function to check if you win the game. 
+
+June 8:
+finished the main game, just have to add the extra things like main screen, timer and other stuff. Things that I did today include the check win function and the end screen function so that the game pauses when you win / lose. the timer function does not work as of right now because it does not reset between runs. working on main screen and timer tmr. 

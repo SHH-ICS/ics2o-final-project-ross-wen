@@ -7,11 +7,11 @@ import random
 TILE_SIZE = 32
 ROWS = 9
 COLS = 9
-NUM_MINES = 10
+NUM_MINES = 1
 FPS = 30
 WIDTH = TILE_SIZE*ROWS
 HEIGHT = TILE_SIZE*COLS
-TITLE = "MINESWEEPER - ROSS FINAL PROJECT" 
+TITLE = "MINESWEEPER" 
 
 #pygame colors
 BACKGROUND_COLOR = (40, 40, 40)
@@ -47,9 +47,12 @@ class Game:
     self.playing = True
     while self.playing:
       self.clock.tick(FPS)
+      self.time_score = str(pygame.time.get_ticks()//1000)
+      pygame.display.set_caption(TITLE + "  Time:" + self.time_score)
       self.events() 
       self.draw() 
-
+    else:
+      self.end_screen()
   #all the events for minesweeper
   def events(self):
       for event in pygame.event.get():
@@ -86,10 +89,31 @@ class Game:
                 self.board.board_list[mx][my].flagged = False
               elif not self.board.board_list[mx][my].flagged:
                 self.board.board_list[mx][my].flagged = True
+
+          if self.win_check():
+            self.win = True
+            self.playing = False
+            for row in self.board.board_list:
+              for tile in row:
+                if not tile.revealed:
+                  tile.flagged = True
+            pygame.display.set_caption("YOU WIN! TIME:" + self.time_score)
               
-              
-              
-              
+  def win_check(self):
+    for row in self.board.board_list:
+      for tile in row:
+        if tile.type != "B" and not tile.revealed:
+          return False
+    return True
+  
+  def end_screen(self):
+    while True:
+      for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            quit(0)
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            return
           
   def draw(self):
     self.screen.fill(BACKGROUND_COLOR)
