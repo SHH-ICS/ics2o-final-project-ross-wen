@@ -5,8 +5,8 @@ import random
 
 #important global variables, will change rows and cols to user input later on if i have time
 TILE_SIZE = 24
-ROWS = 15
-COLS = 15
+ROWS = 20
+COLS = 20
 NUM_MINES = 20
 FPS = 30
 WIDTH = TILE_SIZE*ROWS
@@ -59,7 +59,7 @@ class Game:
             if event.key == pygame.K_1:
               ROWS = 9
               COLS = 9
-              NUM_MINES = 20
+              NUM_MINES = 10
               self.new()
               game_state = "game"
             if event.key == pygame.K_2:
@@ -92,8 +92,8 @@ class Game:
     global TITLE
     self.screen.fill((0, 0, 0))
     self.font = pygame.font.SysFont('arial', 40)
-    self.start_title = self.font.render('My Game', True, (255, 255, 255))
-    self.start_button = self.font.render('Start', True, (255, 255, 255))
+    self.start_title = self.font.render('Minesweeper - Ross Wen Final Project', True, (255, 255, 255))
+    self.start_button = self.font.render('Press 1, 2 or 3 to start!', True, (255, 255, 255))
     self.screen.blit(self.start_title, (WIDTH/2 - self.start_title.get_width()/2, HEIGHT/2 - self.start_title.get_height()/2))
     self.screen.blit(self.start_button, (WIDTH/2 - self.start_button.get_width()/2, HEIGHT/2 + self.start_button.get_height()/2))
     pygame.display.update()
