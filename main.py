@@ -4,14 +4,15 @@ import random
 
 
 #important global variables, will change rows and cols to user input later on if i have time
-TILE_SIZE = 32
-ROWS = 9
-COLS = 9
-NUM_MINES = 1
+TILE_SIZE = 24
+ROWS = 15
+COLS = 15
+NUM_MINES = 20
 FPS = 30
 WIDTH = TILE_SIZE*ROWS
 HEIGHT = TILE_SIZE*COLS
 TITLE = "MINESWEEPER" 
+game_state = "start menu"
 
 #pygame colors
 BACKGROUND_COLOR = (40, 40, 40)
@@ -34,26 +35,70 @@ tile_unknown = pygame.transform.scale(pygame.image.load(os.path.join("assets","T
 #game class where the entire thing will be run
 class Game:
   def __init__(self): #initialize the class
-    self.screen = pygame.display.set_mode((WIDTH,HEIGHT)) #basic pygame initialization stuff
+    self.screen = pygame.display.set_mode((WIDTH,HEIGHT)) 
+    pygame.font.init()#basic pygame initialization stuff
     pygame.display.set_caption(TITLE)
     self.clock = pygame.time.Clock()
+    self.sec = 0
 
   #this is just to print if the bombs and clues were being loaded correctly
   def new(self):
     self.board = Board()
     self.board.display_board()
-    
   def run(self): #game loop 
+    global game_state
+    global ROWS
+    global COLS
+    global NUM_MINES
     self.playing = True
     while self.playing:
-      self.clock.tick(FPS)
-      self.time_score = str(pygame.time.get_ticks()//1000)
-      pygame.display.set_caption(TITLE + "  Time:" + self.time_score)
-      self.events() 
-      self.draw() 
+      if game_state == "start menu":
+        self.draw_start_menu()
+        for event in pygame.event.get():
+          if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_1:
+              ROWS = 9
+              COLS = 9
+              NUM_MINES = 20
+              self.new()
+              game_state = "game"
+            if event.key == pygame.K_2:
+              ROWS = 15
+              COLS = 15
+              NUM_MINES = 30
+              self.new()
+              game_state = "game"
+            if event.key == pygame.K_3:
+              ROWS = 20
+              COLS = 20
+              NUM_MINES = 50
+              self.new()
+              game_state = "game"
+      elif game_state == "game":
+        self.clock.tick(FPS)
+        self.ingame_clock()
+        self.events() 
+        self.draw() 
     else:
       self.end_screen()
   #all the events for minesweeper
+  
+  def ingame_clock(self):
+    self.sec += 1
+    pygame.display.set_caption(TITLE + "  Time:" + str(self.sec // FPS)) 
+
+
+  def draw_start_menu(self):
+    global TITLE
+    self.screen.fill((0, 0, 0))
+    self.font = pygame.font.SysFont('arial', 40)
+    self.start_title = self.font.render('My Game', True, (255, 255, 255))
+    self.start_button = self.font.render('Start', True, (255, 255, 255))
+    self.screen.blit(self.start_title, (WIDTH/2 - self.start_title.get_width()/2, HEIGHT/2 - self.start_title.get_height()/2))
+    self.screen.blit(self.start_button, (WIDTH/2 - self.start_button.get_width()/2, HEIGHT/2 + self.start_button.get_height()/2))
+    pygame.display.update()
+    
+  
   def events(self):
       for event in pygame.event.get():
         #quit
@@ -79,6 +124,7 @@ class Game:
                       tile.image = tile_not_mine
                     elif tile.type == "B":
                       tile.revealed = True
+                pygame.display.set_caption("YOU LOSE!")
                 self.playing = False
                 
 
@@ -97,7 +143,7 @@ class Game:
               for tile in row:
                 if not tile.revealed:
                   tile.flagged = True
-            pygame.display.set_caption("YOU WIN! TIME:" + self.time_score)
+            pygame.display.set_caption("YOU WIN! TIME:" + str(self.sec // FPS))
               
   def win_check(self):
     for row in self.board.board_list:
@@ -113,6 +159,7 @@ class Game:
             pygame.quit()
             quit(0)
         if event.type == pygame.MOUSEBUTTONDOWN:
+            self.sec = 0
             return
           
   def draw(self):
@@ -234,5 +281,5 @@ class Board:
 
 game = Game()
 while True: #runs the entire game class in a loop
-  game.new()
   game.run()
+  game.new()

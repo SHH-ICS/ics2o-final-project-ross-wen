@@ -18,3 +18,6 @@ added events such as clicking and right clicking, added clues and checking neigh
 
 June 8:
 finished the main game, just have to add the extra things like main screen, timer and other stuff. Things that I did today include the check win function and the end screen function so that the game pauses when you win / lose. the timer function does not work as of right now because it does not reset between runs. working on main screen and timer tmr. 
+
+June 9: Ive completed the timer, which is very rudimentary but it works. I'm not sure whether ill add a file to save the timed scores on but for now i need to work on the main screen/ start screen. 
+I have finished a part of the start screen, now i just need to: 1. make it look better as it is a black screen right now 2. make it so it appears after you win/lose so you can cahnge difficulties without exiting program. 3. clean the code up and put them all in functions. 
