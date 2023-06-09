@@ -7,7 +7,7 @@ import random
 TILE_SIZE = 24
 ROWS = 20
 COLS = 20
-NUM_MINES = 20
+NUM_MINES = 99
 FPS = 30
 WIDTH = TILE_SIZE*ROWS
 HEIGHT = TILE_SIZE*COLS
@@ -21,15 +21,22 @@ BACKGROUND_COLOR = (40, 40, 40)
 #put all clue images in assets folder into an array
 tile_numbers = []
 for i in range(1,8):
-  tile_numbers.append(pygame.transform.scale(pygame.image.load(os.path.join("assets", f"Tile{i}.png")),(TILE_SIZE,TILE_SIZE)))
+  tile_numbers.append(pygame.transform.scale(pygame.image.load(os.path.join("tile_assets", f"Tile{i}.png")),(TILE_SIZE,TILE_SIZE)))
 
 #put all other sprites into their own independant variables
-tile_empty = pygame.transform.scale(pygame.image.load(os.path.join("assets","TileEmpty.png")),(TILE_SIZE,TILE_SIZE))
-tile_exploded = pygame.transform.scale(pygame.image.load(os.path.join("assets","TileExploded.png")),(TILE_SIZE,TILE_SIZE))
-tile_flag = pygame.transform.scale(pygame.image.load(os.path.join("assets","TileFlag.png")),(TILE_SIZE,TILE_SIZE))
-tile_mine = pygame.transform.scale(pygame.image.load(os.path.join("assets","TileMine.png")),(TILE_SIZE,TILE_SIZE))
-tile_not_mine = pygame.transform.scale(pygame.image.load(os.path.join("assets","TileNotMine.png")),(TILE_SIZE,TILE_SIZE))
-tile_unknown = pygame.transform.scale(pygame.image.load(os.path.join("assets","TileUnknown.png")),(TILE_SIZE,TILE_SIZE))
+tile_empty = pygame.transform.scale(pygame.image.load(os.path.join("tile_assets","TileEmpty.png")),(TILE_SIZE,TILE_SIZE))
+tile_exploded = pygame.transform.scale(pygame.image.load(os.path.join("tile_assets","TileExploded.png")),(TILE_SIZE,TILE_SIZE))
+tile_flag = pygame.transform.scale(pygame.image.load(os.path.join("tile_assets","TileFlag.png")),(TILE_SIZE,TILE_SIZE))
+tile_mine = pygame.transform.scale(pygame.image.load(os.path.join("tile_assets","TileMine.png")),(TILE_SIZE,TILE_SIZE))
+tile_not_mine = pygame.transform.scale(pygame.image.load(os.path.join("tile_assets","TileNotMine.png")),(TILE_SIZE,TILE_SIZE))
+tile_unknown = pygame.transform.scale(pygame.image.load(os.path.join("tile_assets","TileUnknown.png")),(TILE_SIZE,TILE_SIZE))
+
+#initialize start screen images
+start_image_one = pygame.transform.scale(pygame.image.load(os.path.join("start_images","minesweeper_start_1.png")),(TILE_SIZE*6,TILE_SIZE*6))
+start_image_two = pygame.transform.scale(pygame.image.load(os.path.join("start_images","minesweeper_start_2.png")),(TILE_SIZE*4,TILE_SIZE*4))
+
+
+
 
 
 #game class where the entire thing will be run
@@ -53,13 +60,14 @@ class Game:
     self.playing = True
     while self.playing:
       if game_state == "start menu":
+        pygame.display.set_caption(TITLE)
         self.draw_start_menu()
         for event in pygame.event.get():
           if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_1:
               ROWS = 9
               COLS = 9
-              NUM_MINES = 10
+              NUM_MINES = 1
               self.new()
               game_state = "game"
             if event.key == pygame.K_2:
@@ -90,16 +98,26 @@ class Game:
 
   def draw_start_menu(self):
     global TITLE
-    self.screen.fill((0, 0, 0))
-    self.font = pygame.font.SysFont('arial', 40)
-    self.start_title = self.font.render('Minesweeper - Ross Wen Final Project', True, (255, 255, 255))
-    self.start_button = self.font.render('Press 1, 2 or 3 to start!', True, (255, 255, 255))
-    self.screen.blit(self.start_title, (WIDTH/2 - self.start_title.get_width()/2, HEIGHT/2 - self.start_title.get_height()/2))
-    self.screen.blit(self.start_button, (WIDTH/2 - self.start_button.get_width()/2, HEIGHT/2 + self.start_button.get_height()/2))
+    global TILE_SIZE
+    self.screen.fill((255, 255, 255))
+    self.font = pygame.font.SysFont('arial', TILE_SIZE)
+    self.start_title = self.font.render('Minesweeper - Ross Wen Final Project', True, (0, 0, 0))
+    self.start_level1 = self.font.render('Press [1] for Easy', True, (0, 0, 0))
+    self.start_level2 = self.font.render('Press [2] for Medium', True, (0, 0, 0))
+    self.start_level3 = self.font.render('Press [3] for Hard', True, (0, 0, 0))
+    self.start_return = self.font.render('Press J to return to Menu', True, (0, 0, 0))
+    self.screen.blit(self.start_title, (WIDTH/2 - self.start_title.get_width()/2, HEIGHT/2 - self.start_title.get_height()))
+    self.screen.blit(self.start_level1, (WIDTH/2 - self.start_level1.get_width()/2, HEIGHT/2 - self.start_level1.get_height()/3))
+    self.screen.blit(self.start_level2, (WIDTH/2 - self.start_level2.get_width()/2, HEIGHT/2 + self.start_level2.get_height()))
+    self.screen.blit(self.start_level3, (WIDTH/2 - self.start_level3.get_width()/2, HEIGHT/2 + self.start_level3.get_height()*2))
+    self.screen.blit(self.start_return, (WIDTH/2 - self.start_return.get_width()/2, HEIGHT/2 + self.start_return.get_height()*3))
+    self.screen.blit(start_image_one, (HEIGHT*0.3645, WIDTH*0.1041))
+    self.screen.blit(start_image_two, (HEIGHT*0.1041, WIDTH*0.7291))
     pygame.display.update()
     
   
   def events(self):
+      global game_state
       for event in pygame.event.get():
         #quit
         if event.type == pygame.QUIT:
@@ -144,6 +162,11 @@ class Game:
                 if not tile.revealed:
                   tile.flagged = True
             pygame.display.set_caption("YOU WIN! TIME:" + str(self.sec // FPS))
+
+        if event.type == pygame.KEYDOWN: 
+          if event.key == pygame.K_j:
+            self.sec = 0
+            game_state = "start menu"
               
   def win_check(self):
     for row in self.board.board_list:
@@ -153,6 +176,7 @@ class Game:
     return True
   
   def end_screen(self):
+    global game_state
     while True:
       for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -161,6 +185,11 @@ class Game:
         if event.type == pygame.MOUSEBUTTONDOWN:
             self.sec = 0
             return
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_j:
+              self.sec = 0
+              game_state = "start menu"
+              return
           
   def draw(self):
     self.screen.fill(BACKGROUND_COLOR)
