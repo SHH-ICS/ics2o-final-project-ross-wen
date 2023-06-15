@@ -11,9 +11,10 @@ NUM_MINES = 99
 FPS = 30
 WIDTH = TILE_SIZE*ROWS
 HEIGHT = TILE_SIZE*COLS
+TEMP_WIDTH = TILE_SIZE*ROWS
+TEMP_HEIGHT = TILE_SIZE*ROWS
 TITLE = "MINESWEEPER" 
 game_state = "start menu"
-
 #pygame colors
 BACKGROUND_COLOR = (40, 40, 40)
 
@@ -49,13 +50,17 @@ class Game:
     self.sec = 0 #timer
 
   def new(self): #creates a new board
+    pygame.display.set_mode((TEMP_WIDTH,TEMP_HEIGHT))
     self.board = Board()
     self.board.display_board() #prints the board in console for testing
+    
   def run(self): #game loop 
     global game_state
     global ROWS
     global COLS
     global NUM_MINES
+    global TEMP_HEIGHT
+    global TEMP_WIDTH
     self.playing = True
     while self.playing:
       if game_state == "start menu": #start menu
@@ -67,18 +72,24 @@ class Game:
               ROWS = 9
               COLS = 9
               NUM_MINES = 10
+              TEMP_HEIGHT = ROWS*TILE_SIZE
+              TEMP_WIDTH = COLS*TILE_SIZE
               self.new()
               game_state = "game"
             if event.key == pygame.K_2: #medium
               ROWS = 15
               COLS = 15
               NUM_MINES = 30
+              TEMP_HEIGHT = ROWS*TILE_SIZE
+              TEMP_WIDTH = COLS*TILE_SIZE
               self.new()
               game_state = "game"
             if event.key == pygame.K_3: #hard
               ROWS = 20
               COLS = 20
               NUM_MINES = 50
+              TEMP_HEIGHT = ROWS*TILE_SIZE
+              TEMP_WIDTH = COLS*TILE_SIZE
               self.new() 
               game_state = "game"
       elif game_state == "game":
@@ -91,7 +102,7 @@ class Game:
     
   def ingame_clock(self): #in game clock 
     self.sec += 1 #every frame add one
-    pygame.display.set_caption(TITLE + "  Time:" + str(self.sec // FPS)) #divide by fps to find seconds
+    pygame.display.set_caption("Time:" + str(self.sec // FPS)) #divide by fps to find seconds
     
   def draw_start_menu(self): #draws the menu
     global TITLE
@@ -139,7 +150,7 @@ class Game:
                       tile.image = tile_not_mine
                     elif tile.type == "B": #reveal all bombs on the map
                       tile.revealed = True
-                pygame.display.set_caption("YOU LOSE!") 
+                pygame.display.set_caption("LOSE!") 
                 self.playing = False #stop the loop and goes to the end_screen()function
                 
 
@@ -158,12 +169,11 @@ class Game:
               for tile in row:
                 if not tile.revealed:
                   tile.flagged = True
-            pygame.display.set_caption("YOU WIN! TIME:" + str(self.sec // FPS)) #displays how much time it took to win
+            pygame.display.set_caption("WIN! TIME:" + str(self.sec // FPS)) #displays how much time it took to win
 
         if event.type == pygame.KEYDOWN: #return to menu
           if event.key == pygame.K_j:
-            self.sec = 0
-            game_state = "start menu"
+            self.return_to_main()
               
   def win_check(self): #function to check if user has won
     for row in self.board.board_list: #goes through grid and checks if every tile except bombs have been revealed
@@ -184,15 +194,29 @@ class Game:
             return
         if event.type == pygame.KEYDOWN: #goes back to menu
             if event.key == pygame.K_j:
-              self.sec = 0
-              game_state = "start menu"
+              self.return_to_main()
               return
           
   def draw(self): #draw game
     self.screen.fill(BACKGROUND_COLOR)
     self.board.draw(self.screen)
     pygame.display.flip()
-
+  
+  def return_to_main(self):
+    global game_state
+    global TILE_SIZE
+    global ROWS
+    global COLS
+    global TEMP_HEIGHT
+    global TEMP_WIDTH
+    self.sec = 0
+    game_state = "start menu"
+    ROWS = 20
+    COLS = 20
+    TEMP_WIDTH = ROWS * TILE_SIZE
+    TEMP_HEIGHT = COLS * TILE_SIZE
+    pygame.display.set_mode((TEMP_WIDTH,TEMP_HEIGHT))
+  
   def write_best_time(self): #future function to write best times for each level by writing into a file
     self.filehandle = open("timeScores.txt",'w')
     pass

@@ -23,3 +23,6 @@ June 9: Ive completed the timer, which is very rudimentary but it works. I'm not
 I have finished a part of the start screen, now i just need to: 1. make it look better as it is a black screen right now 2. make it so it appears after you win/lose so you can cahnge difficulties without exiting program. 3. clean the code up and put them all in functions. 
 June 12:
 I have made the start screen into something decently presentable and also added images to the start screen. I have started working on a function to write the best timed score into a file. I have also added comments in the code. 
+
+June 15: 
+I made the pygame window resize with each level. I tried to move the timer into a text within the window and not the title but by adding to the height of the window, it changed the x and y input of the actual game so i gave up on that. I will try to save scores and then after that the game will be finished. 
