@@ -48,6 +48,15 @@ class Game:
     pygame.display.set_caption(TITLE)
     self.clock = pygame.time.Clock()
     self.sec = 0 #timer
+    self.file_e = open("score_e.txt",'w')
+    self.file_m = open("score_m.txt",'w')
+    self.file_h = open("score_h.txt",'w')
+    self.file_e.write("0")
+    self.file_m.write("0")
+    self.file_h.write("0")
+    self.file_e.close()
+    self.file_m.close()
+    self.file_h.close()
 
   def new(self): #creates a new board
     pygame.display.set_mode((TEMP_WIDTH,TEMP_HEIGHT))
@@ -71,11 +80,11 @@ class Game:
             if event.key == pygame.K_1: #easy
               ROWS = 9
               COLS = 9
-              NUM_MINES = 10
+              NUM_MINES = 1
               TEMP_HEIGHT = ROWS*TILE_SIZE
               TEMP_WIDTH = COLS*TILE_SIZE
               self.new()
-              game_state = "game"
+              game_state = "game_e"
             if event.key == pygame.K_2: #medium
               ROWS = 15
               COLS = 15
@@ -83,7 +92,7 @@ class Game:
               TEMP_HEIGHT = ROWS*TILE_SIZE
               TEMP_WIDTH = COLS*TILE_SIZE
               self.new()
-              game_state = "game"
+              game_state = "game_m"
             if event.key == pygame.K_3: #hard
               ROWS = 20
               COLS = 20
@@ -91,8 +100,8 @@ class Game:
               TEMP_HEIGHT = ROWS*TILE_SIZE
               TEMP_WIDTH = COLS*TILE_SIZE
               self.new() 
-              game_state = "game"
-      elif game_state == "game":
+              game_state = "game_h"
+      elif game_state == "game_e" or game_state =="game_m" or game_state == "game_h":
         self.clock.tick(FPS)
         self.ingame_clock()
         self.events() 
@@ -103,25 +112,6 @@ class Game:
   def ingame_clock(self): #in game clock 
     self.sec += 1 #every frame add one
     pygame.display.set_caption("Time:" + str(self.sec // FPS)) #divide by fps to find seconds
-    
-  def draw_start_menu(self): #draws the menu
-    global TITLE
-    global TILE_SIZE
-    self.screen.fill((255, 255, 255))
-    self.font = pygame.font.SysFont('arial', TILE_SIZE)
-    self.start_title = self.font.render('Minesweeper - Ross Wen Final Project', True, (0, 0, 0))
-    self.start_level1 = self.font.render('Press [1] for Easy', True, (0, 0, 0))
-    self.start_level2 = self.font.render('Press [2] for Medium', True, (0, 0, 0))
-    self.start_level3 = self.font.render('Press [3] for Hard', True, (0, 0, 0))
-    self.start_return = self.font.render('Press J to return to Menu', True, (0, 0, 0))
-    self.screen.blit(self.start_title, (WIDTH/2 - self.start_title.get_width()/2, HEIGHT/2 - self.start_title.get_height()))
-    self.screen.blit(self.start_level1, (WIDTH/2 - self.start_level1.get_width()/2, HEIGHT/2 + self.start_level1.get_height()/10))
-    self.screen.blit(self.start_level2, (WIDTH/2 - self.start_level2.get_width()/2, HEIGHT/2 + self.start_level2.get_height()))
-    self.screen.blit(self.start_level3, (WIDTH/2 - self.start_level3.get_width()/2, HEIGHT/2 + self.start_level3.get_height()*2))
-    self.screen.blit(self.start_return, (WIDTH/2 - self.start_return.get_width()/2, HEIGHT/2 + self.start_return.get_height()*3))
-    self.screen.blit(start_image_one, (HEIGHT*0.3645, WIDTH*0.1041))
-    self.screen.blit(start_image_two, (HEIGHT*0.1041, WIDTH*0.7291))
-    pygame.display.update()
     
   #game events
   def events(self):
@@ -170,6 +160,16 @@ class Game:
                 if not tile.revealed:
                   tile.flagged = True
             pygame.display.set_caption("WIN! TIME:" + str(self.sec // FPS)) #displays how much time it took to win
+            if game_state == "game_e":
+              highscore = self.sec // FPS
+              print(highscore)
+              self.write_best_time(highscore, "e")
+            elif game_state == "game_m":
+              highscore = self.sec // FPS
+              self.write_best_time(highscore, "m")
+            elif game_state == "game_h":
+              highscore = self.sec // FPS
+              self.write_best_time(highscore, "h")
 
         if event.type == pygame.KEYDOWN: #return to menu
           if event.key == pygame.K_j:
@@ -196,7 +196,41 @@ class Game:
             if event.key == pygame.K_j:
               self.return_to_main()
               return
-          
+              
+  def draw_start_menu(self): #draws the menu
+    global TITLE
+    global TILE_SIZE
+    self.screen.fill((255, 255, 255))
+    self.font = pygame.font.SysFont('arial', TILE_SIZE)
+    self.start_title = self.font.render('Minesweeper - Ross Wen Final Project', True, (0, 0, 0))
+    self.start_level1 = self.font.render('Press [1] for Easy', True, (0, 0, 0))
+    self.start_level2 = self.font.render('Press [2] for Medium', True, (0, 0, 0))
+    self.start_level3 = self.font.render('Press [3] for Hard', True, (0, 0, 0))
+    self.start_return = self.font.render('Press J to return to Menu', True, (0, 0, 0))
+    self.screen.blit(self.start_title, (WIDTH/2 - self.start_title.get_width()/2, HEIGHT/2 - self.start_title.get_height()))
+    self.screen.blit(self.start_level1, (WIDTH/2 - self.start_level1.get_width()/2, HEIGHT/2 + self.start_level1.get_height()/10))
+    self.screen.blit(self.start_level2, (WIDTH/2 - self.start_level2.get_width()/2, HEIGHT/2 + self.start_level2.get_height()))
+    self.screen.blit(self.start_level3, (WIDTH/2 - self.start_level3.get_width()/2, HEIGHT/2 + self.start_level3.get_height()*2))
+    self.screen.blit(self.start_return, (WIDTH/2 - self.start_return.get_width()/2, HEIGHT/2 + self.start_return.get_height()*3))
+    self.screen.blit(start_image_one, (WIDTH*0.3645, HEIGHT*0.1041))
+    self.screen.blit(start_image_two, (WIDTH*0.1041, HEIGHT*0.1041))
+    self.display_highscore()
+    pygame.display.update()
+
+  def display_highscore(self):
+    self.highscore_font = pygame.font.SysFont('arial', TILE_SIZE - 5)
+    self.highscore_number_easy = self.read_best_time("e")
+    self.highscore_number_med = self.read_best_time("m")
+    self.highscore_number_hard = self.read_best_time("h")
+    self.highscore_text = self.font.render("Highscores:", True, (0, 0, 0))
+    self.highscore_score_easy = self.highscore_font.render("Easy: " + self.highscore_number_easy + "s", True, (0, 0, 0))
+    self.highscore_score_med = self.highscore_font.render("Medium: " + self.highscore_number_med + "s", True, (0, 0, 0))
+    self.highscore_score_hard = self.highscore_font.render("Hard: " + self.highscore_number_hard + "s", True, (0, 0, 0))
+    self.screen.blit(self.highscore_text, (10,325))
+    self.screen.blit(self.highscore_score_easy, (WIDTH*0.025,HEIGHT*0.8875))
+    self.screen.blit(self.highscore_score_med, (WIDTH*0.325,HEIGHT*0.8875))
+    self.screen.blit(self.highscore_score_hard, (WIDTH*0.7, HEIGHT*0.8875))
+  
   def draw(self): #draw game
     self.screen.fill(BACKGROUND_COLOR)
     self.board.draw(self.screen)
@@ -217,13 +251,42 @@ class Game:
     TEMP_HEIGHT = COLS * TILE_SIZE
     pygame.display.set_mode((TEMP_WIDTH,TEMP_HEIGHT))
   
-  def write_best_time(self): #future function to write best times for each level by writing into a file
-    self.filehandle = open("timeScores.txt",'w')
-    pass
+  def write_best_time(self, score, diff): #future function to write best times for each level by writing into a file
+    if diff == "e":
+      if score > int(self.read_best_time("e")):
+        self.file_e = open("score_e.txt",'w')
+        self.file_e.write(str(score))
+    if diff == "m":
+      if score > int(self.read_best_time("m")):
+        open("score_m.txt", "w").close()
+        self.file_e.write(str(score))
+    if diff == "h":
+      if score > int(self.read_best_time("h")):
+        open("score_h.txt", "w").close()
+        self.file_e.write(str(score))
+      
 
-  def read_best_time(self): #read from the file
-    pass
 
+  def read_best_time(self, diff): #read from the file
+    
+    
+    self.infile_h = open("score_h.txt",'r')
+    if diff == "e":
+      self.infile_e = open("score_e.txt",'r')
+      time = self.infile_e.readline()
+      self.infile_e.close()
+      return time
+    elif diff == "m":
+      self.infile_m = open("score_m.txt",'r')
+      time = self.infile_m.readline()
+      self.infile_m.close()
+      return time
+    elif diff == "h":
+      self.infile_h = open("score_m.txt",'r')
+      time = self.infile_h.readline()
+      self.infile_h.close()
+      return time
+  
 #tile class for tiles
 #four different types for the tiles
 #unknown = "."

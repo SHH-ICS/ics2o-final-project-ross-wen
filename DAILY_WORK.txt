@@ -26,3 +26,6 @@ I have made the start screen into something decently presentable and also added 
 
 June 15: 
 I made the pygame window resize with each level. I tried to move the timer into a text within the window and not the title but by adding to the height of the window, it changed the x and y input of the actual game so i gave up on that. I will try to save scores and then after that the game will be finished. 
+
+June 16:
+I tried to make a functions to load and save highscores into a file. UNfortunately i am not too familiar with files and laoding them in so if i am unable to finish this by tuesday i will hvae to scrap it. 
