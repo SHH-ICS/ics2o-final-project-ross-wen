@@ -29,3 +29,6 @@ I made the pygame window resize with each level. I tried to move the timer into 
 
 June 16:
 I tried to make a functions to load and save highscores into a file. UNfortunately i am not too familiar with files and laoding them in so if i am unable to finish this by tuesday i will hvae to scrap it. 
+
+June 19:
+Turns out that I forgot to close the file. The highscore function works now and I am done the game. This is the final log. 

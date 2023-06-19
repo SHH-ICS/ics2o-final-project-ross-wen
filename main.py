@@ -9,9 +9,9 @@ ROWS = 20
 COLS = 20
 NUM_MINES = 99
 FPS = 30
-WIDTH = TILE_SIZE*ROWS
+WIDTH = TILE_SIZE*ROWS #height and width for main menu
 HEIGHT = TILE_SIZE*COLS
-TEMP_WIDTH = TILE_SIZE*ROWS
+TEMP_WIDTH = TILE_SIZE*ROWS #height and width for game
 TEMP_HEIGHT = TILE_SIZE*ROWS
 TITLE = "MINESWEEPER" 
 game_state = "start menu"
@@ -48,15 +48,7 @@ class Game:
     pygame.display.set_caption(TITLE)
     self.clock = pygame.time.Clock()
     self.sec = 0 #timer
-    self.file_e = open("score_e.txt",'w')
-    self.file_m = open("score_m.txt",'w')
-    self.file_h = open("score_h.txt",'w')
-    self.file_e.write("0")
-    self.file_m.write("0")
-    self.file_h.write("0")
-    self.file_e.close()
-    self.file_m.close()
-    self.file_h.close()
+    self.file_setup()
 
   def new(self): #creates a new board
     pygame.display.set_mode((TEMP_WIDTH,TEMP_HEIGHT))
@@ -80,7 +72,7 @@ class Game:
             if event.key == pygame.K_1: #easy
               ROWS = 9
               COLS = 9
-              NUM_MINES = 1
+              NUM_MINES = 10
               TEMP_HEIGHT = ROWS*TILE_SIZE
               TEMP_WIDTH = COLS*TILE_SIZE
               self.new()
@@ -196,7 +188,7 @@ class Game:
             if event.key == pygame.K_j:
               self.return_to_main()
               return
-              
+  
   def draw_start_menu(self): #draws the menu
     global TITLE
     global TILE_SIZE
@@ -256,21 +248,30 @@ class Game:
       if score > int(self.read_best_time("e")):
         self.file_e = open("score_e.txt",'w')
         self.file_e.write(str(score))
+        self.file_e.close()
     if diff == "m":
       if score > int(self.read_best_time("m")):
-        open("score_m.txt", "w").close()
-        self.file_e.write(str(score))
+        self.file_m = open("score_m.txt",'w')
+        self.file_m.write(str(score))
+        self.file_m.close()
     if diff == "h":
       if score > int(self.read_best_time("h")):
-        open("score_h.txt", "w").close()
-        self.file_e.write(str(score))
+        self.file_h = open("score_h.txt",'w')
+        self.file_h.write(str(score))
+        self.file_h.close()
       
-
+  def file_setup(self):
+    self.file_e = open("score_e.txt",'w')
+    self.file_m = open("score_m.txt",'w')
+    self.file_h = open("score_h.txt",'w')
+    self.file_e.write("0")
+    self.file_m.write("0")
+    self.file_h.write("0")
+    self.file_e.close()
+    self.file_m.close()
+    self.file_h.close()
 
   def read_best_time(self, diff): #read from the file
-    
-    
-    self.infile_h = open("score_h.txt",'r')
     if diff == "e":
       self.infile_e = open("score_e.txt",'r')
       time = self.infile_e.readline()
@@ -282,7 +283,7 @@ class Game:
       self.infile_m.close()
       return time
     elif diff == "h":
-      self.infile_h = open("score_m.txt",'r')
+      self.infile_h = open("score_h.txt",'r')
       time = self.infile_h.readline()
       self.infile_h.close()
       return time
